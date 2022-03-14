@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "micro-origination-service.fullname" . }}
+  labels:
+    {{- include "micro-origination-service.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "micro-origination-service.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.strategy.type }}
+    rollingUpdate:
+      maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ print $.Template.BasePath "/configmap.yaml" . | sha256sum }}
+      labels:
+        app.kubernetes.io/name: {{ include "micro-origination-service.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: HTTP_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: HTTP_PORT
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  key: PGHOST
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  key: PGUSER
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: PGPASSWORD
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: PGDATABASE
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  key: PGPORT
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: DATABASE_LOGGING
+              valueFrom:
+                secretKeyRef:
+                  key: DATABASE_LOGGING
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: GRPC_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: GRPC_PORT
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: NODE_ENV
+              valueFrom:
+                secretKeyRef:
+                  key: NODE_ENV
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.http_port }}
+              protocol: TCP
+            - name: grpc-port
+              containerPort: {{ .Values.service.grpc_port }}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.service.port }}
+              scheme: HTTP
+            initialDelaySeconds: 120 # how long to wait before checking
+            periodSeconds: 20 # how long to wait between checks
+            successThreshold: 2 # how many successes to hit before accepting
+            failureThreshold: 3 # how many failures to accept before failing
+            timeoutSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "micro-origination-service.fullname" . }}
+  labels:
+    {{- include "micro-origination-service.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: 'micro-origination-service-http-port'
+      port: {{ .Values.service.http_port }}
+      targetPort: {{ .Values.service.http_port }}
+      protocol: TCP
+    - name: 'micro-origination-service-grpc-port'
+      port: {{ .Values.service.grpc_port }}
+      targetPort: {{ .Values.service.grpc_port }}
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: {{ include "micro-origination-service.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
