@@ -1,0 +1,36 @@
+pipeline {
+  agent none
+  environment {
+    HOME = '.'
+  }
+  stages {
+    stage('build') {
+      agent { 
+        docker {
+          image 'autochek/helm:helm3.2'
+        } 
+      }
+      steps {
+        sh '''
+          CHART_NAME="micro-origination-service"
+          cd charts
+          helm lint $CHART_NAME
+          helm package -d $CHART_NAME $CHART_NAME
+          cp $CHART_NAME/$CHART_NAME*tgz  .
+          rm -rf helm-charts
+          git clone -b "$GITHUB_PAGES_BRANCH" https://$GITHUB_OAUTH:x-oauth-basic@github.com/Autochek-Africa/helm-charts.git
+	        mkdir -p helm-charts/$CHART_NAME
+          cp $CHART_NAME*tgz helm-charts/$CHART_NAME/
+          cd helm-charts
+
+          git config user.email "developers@autochek.africa"
+          git config user.name "dev-autochek-africa"
+
+          git add .
+          git commit -am "publishing $CHART_NAME"
+          git push origin gh-pages
+        '''
+      }
+     }
+    }
+}
