@@ -77,6 +77,21 @@ spec:
                 secretKeyRef:
                   key: NODE_ENV
                   name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: USER_SVC
+              valueFrom:
+                secretKeyRef:
+                  key: USER_SVC
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: INVENTORY_SVC
+              valueFrom:
+                secretKeyRef:
+                  key: INVENTORY_SVC
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: CRON_MANAGER
+              valueFrom:
+                secretKeyRef:
+                  key: CRON_MANAGER
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
           ports:
             - name: http
               containerPort: {{ .Values.service.http_port }}
