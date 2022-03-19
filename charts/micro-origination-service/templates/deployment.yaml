@@ -97,6 +97,51 @@ spec:
                 secretKeyRef:
                   key: REDIS_URL
                   name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: FIRST_CENTRAL_CREDIT_BUREAU_API_URL
+              valueFrom:
+                secretKeyRef:
+                  key: FIRST_CENTRAL_CREDIT_BUREAU_API_URL
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: FIRST_CENTRAL_CREDIT_BUREAU_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: FIRST_CENTRAL_CREDIT_BUREAU_USERNAME
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: FIRST_CENTRAL_CREDIT_BUREAU_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: FIRST_CENTRAL_CREDIT_BUREAU_PASSWORD
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: METROPOL_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: METROPOL_BASE_URL
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: METROPOL_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: METROPOL_PUBLIC_KEY
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: METROPOL_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: METROPOL_PRIVATE_KEY
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: XDS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: XDS_USERNAME
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: XDS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: XDS_PASSWORD
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: XDS_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: XDS_BASE_URL
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
           ports:
             - name: http
               containerPort: {{ .Values.service.http_port }}
