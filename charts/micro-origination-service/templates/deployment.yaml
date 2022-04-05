@@ -147,6 +147,11 @@ spec:
                 secretKeyRef:
                   key: CRM_SVC
                   name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: LOAN_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  key: LOAN_DB_URL
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
           ports:
             - name: http
               containerPort: {{ .Values.service.http_port }}
