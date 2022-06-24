@@ -152,6 +152,11 @@ spec:
                 secretKeyRef:
                   key: LOAN_DB_URL
                   name: {{ .Values.valueFrom.secretKeyRef.name }}
+            - name: EMAIL_HANDLER
+              valueFrom:
+                secretKeyRef:
+                  key: EMAIL_HANDLER
+                  name: {{ .Values.valueFrom.secretKeyRef.name }}
           ports:
             - name: http
               containerPort: {{ .Values.service.http_port }}
